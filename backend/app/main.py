@@ -5,7 +5,9 @@ from fastapi.openapi.constants import METHODS_WITH_BODY
 from fastapi.openapi.utils import get_openapi
 
 from app.api.v1.routes.health import router as health_router
+from app.api.v1.routes.product_categories import router as product_categories_router
 from app.api.v1.routes.students import router as students_router
+from app.api.v1.routes.products import router as products_router
 from app.core.config import settings
 
 # The HTTP QUERY method (RFC 9110 style: safe, idempotent, but with a request body)
@@ -39,6 +41,8 @@ def create_app() -> FastAPI:
     )
     app.include_router(health_router, prefix=settings.api_v1_prefix)
     app.include_router(students_router, prefix=settings.api_v1_prefix)
+    app.include_router(products_router, prefix=settings.api_v1_prefix)
+    app.include_router(product_categories_router, prefix=settings.api_v1_prefix)
     app.openapi = lambda: build_openapi(app)
     return app
 

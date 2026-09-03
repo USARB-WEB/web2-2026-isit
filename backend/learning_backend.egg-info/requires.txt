@@ -2,6 +2,10 @@ fastapi<1.0.0,>=0.116.0
 email-validator<3.0.0,>=2.2.0
 uvicorn[standard]<1.0.0,>=0.35.0
 pydantic-settings<3.0.0,>=2.10.0
+sqlalchemy<3.0.0,>=2.0.0
+alembic<2.0.0,>=1.13.0
+pymysql<2.0.0,>=1.1.0
+cryptography>=42.0.0
 
 [dev]
 pytest<9.0.0,>=8.4.0
