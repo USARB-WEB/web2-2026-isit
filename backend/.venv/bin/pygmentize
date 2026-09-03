@@ -1,0 +1,6 @@
+#!/Users/sergiuchilat/webserver/usarb-learning/web2-2026-isit/backend/.venv/bin/python3
+import sys
+from pygments.cmdline import main
+if __name__ == '__main__':
+    sys.argv[0] = sys.argv[0].removesuffix('.exe')
+    sys.exit(main())
