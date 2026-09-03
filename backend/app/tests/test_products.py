@@ -26,18 +26,18 @@ def test_create_product() -> None:
     body = response.json()
     assert body["name"] == "Laptop"
     assert body["price"] == 999.99
-    assert body["color"] is None
+    assert body["size"] is None
     assert "id" in body
 
 
-def test_create_product_with_color() -> None:
+def test_create_product_with_size() -> None:
     response = client.post(
         "/api/v1/products",
-        json={"name": "Laptop", "description": "15-inch laptop", "price": 999.99, "color": "Silver"},
+        json={"name": "Laptop", "description": "15-inch laptop", "price": 999.99, "size": "15-inch"},
     )
 
     assert response.status_code == 201
-    assert response.json()["color"] == "Silver"
+    assert response.json()["size"] == "15-inch"
 
 
 def test_list_products() -> None:
@@ -97,7 +97,7 @@ def test_update_product() -> None:
         "name": "Webcam Pro",
         "description": "4K webcam",
         "price": 59.0,
-        "color": None,
+        "size": None,
     }
 
 
