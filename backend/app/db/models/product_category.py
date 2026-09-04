@@ -1,18 +1,14 @@
 from typing import Optional
 
-from sqlalchemy import ForeignKey, Numeric, String
+from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
 
 
-class Product(Base):
-    __tablename__ = "products"
+class ProductCategory(Base):
+    __tablename__ = "product_categories"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     description: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
-    price: Mapped[Optional[float]] = mapped_column(Numeric(10, 2), nullable=True)
-    category_id: Mapped[int] = mapped_column(
-        ForeignKey("product_categories.id"), nullable=False
-    )

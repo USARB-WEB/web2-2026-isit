@@ -12,11 +12,6 @@ def get_products(service: ProductService = Depends(get_product_service)) -> list
     return service.get_products()
 
 
-@router.get("/with-prices")
-def get_products_with_prices(service: ProductService = Depends(get_product_service)) -> list[dict]:
-    return service.get_products_with_prices()
-
-
 @router.get("/{product_id}", response_model=ProductRead)
 def get_product(product_id: int, service: ProductService = Depends(get_product_service)) -> ProductRead:
     return service.get_product(product_id)

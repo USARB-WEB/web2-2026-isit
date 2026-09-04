@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
 
 from app.repositories.product_category_repository import ProductCategoryRepository
@@ -34,6 +35,12 @@ class ProductCategoryService:
         return ProductCategoryRead.model_validate(category)
 
     def delete_category(self, category_id: int) -> None:
-        deleted = self._repository.delete(category_id)
+        try:
+            deleted = self._repository.delete(category_id)
+        except IntegrityError:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Cannot delete this product category because it is used by one or more products.",
+            )
         if not deleted:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product category not found")

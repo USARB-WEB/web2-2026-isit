@@ -13,12 +13,20 @@ class Settings(BaseSettings):
     mysql_host: str = "localhost"
     mysql_port: int = 3306
     mysql_database: str = "learning_db"
+    mysql_test_database: str = "learning_test_db"
 
     @property
     def database_url(self) -> str:
         return (
             f"mysql+pymysql://{self.mysql_user}:{self.mysql_password}"
             f"@{self.mysql_host}:{self.mysql_port}/{self.mysql_database}"
+        )
+
+    @property
+    def test_database_url(self) -> str:
+        return (
+            f"mysql+pymysql://{self.mysql_user}:{self.mysql_password}"
+            f"@{self.mysql_host}:{self.mysql_port}/{self.mysql_test_database}"
         )
 
     model_config = SettingsConfigDict(
