@@ -1,5 +1,6 @@
 from fastapi import Response, status
 
+from app.dto.product_category import ProductCategoryCreateDTO, ProductCategoryUpdateDTO
 from app.schemas.product_category import (
     ProductCategoryCreate,
     ProductCategoryRead,
@@ -19,10 +20,10 @@ class ProductCategoryController:
         return self._service.get_category(category_id)
 
     def create_category(self, payload: ProductCategoryCreate) -> ProductCategoryRead:
-        return self._service.create_category(payload)
+        return self._service.create_category(ProductCategoryCreateDTO.from_schema(payload))
 
     def update_category(self, category_id: int, payload: ProductCategoryUpdate) -> ProductCategoryRead:
-        return self._service.update_category(category_id, payload)
+        return self._service.update_category(category_id, ProductCategoryUpdateDTO.from_schema(payload))
 
     def delete_category(self, category_id: int) -> Response:
         self._service.delete_category(category_id)

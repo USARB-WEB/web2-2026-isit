@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.db.models.product import Product
+from app.dto.product import ProductCreateDTO, ProductUpdateDTO
 
 
 class ProductRepository:
@@ -18,18 +19,18 @@ class ProductRepository:
     def get(self, product_id: int) -> Product | None:
         return self._db.get(Product, product_id)
 
-    def create(self, data: dict[str, object]) -> Product:
-        product = Product(**data)
+    def create(self, data: ProductCreateDTO) -> Product:
+        product = Product(**data.to_dict())
         self._db.add(product)
         self._db.commit()
         self._db.refresh(product)
         return product
 
-    def update(self, product_id: int, data: dict[str, object]) -> Product | None:
+    def update(self, product_id: int, data: ProductUpdateDTO) -> Product | None:
         product = self.get(product_id)
         if product is None:
             return None
-        for key, value in data.items():
+        for key, value in data.to_dict().items():
             setattr(product, key, value)
         self._db.commit()
         self._db.refresh(product)

@@ -2,40 +2,41 @@ from fastapi import APIRouter, Depends
 
 from app.api.v1.dependencies.orders import get_order_controller
 from app.controllers.order_controller import OrderController
-from app.schemas.order import OrderCreate, OrderRead, OrderSummary, OrderUpdate
+from app.dto.order import OrderReadDTO, OrderSummaryDTO
+from app.schemas.order import OrderCreate, OrderUpdate
 
 router = APIRouter(prefix="/orders", tags=["orders"])
 
 
-@router.get("", response_model=list[OrderSummary])
+@router.get("", response_model=list[OrderSummaryDTO])
 def list_orders(
     controller: OrderController = Depends(get_order_controller),
-) -> list[OrderSummary]:
+) -> list[OrderSummaryDTO]:
     return controller.list_orders()
 
 
-@router.get("/{order_id}", response_model=OrderRead)
+@router.get("/{order_id}", response_model=OrderReadDTO)
 def get_order(
     order_id: int,
     controller: OrderController = Depends(get_order_controller),
-) -> OrderRead:
+) -> OrderReadDTO:
     return controller.get_order(order_id)
 
 
-@router.post("", response_model=OrderRead, status_code=201)
+@router.post("", response_model=OrderReadDTO, status_code=201)
 def create_order(
     payload: OrderCreate,
     controller: OrderController = Depends(get_order_controller),
-) -> OrderRead:
+) -> OrderReadDTO:
     return controller.create_order(payload)
 
 
-@router.put("/{order_id}", response_model=OrderRead)
+@router.put("/{order_id}", response_model=OrderReadDTO)
 def update_order(
     order_id: int,
     payload: OrderUpdate,
     controller: OrderController = Depends(get_order_controller),
-) -> OrderRead:
+) -> OrderReadDTO:
     return controller.update_order(order_id, payload)
 
 

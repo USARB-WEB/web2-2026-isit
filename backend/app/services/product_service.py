@@ -3,9 +3,10 @@ from __future__ import annotations
 from fastapi import HTTPException, status
 from sqlalchemy.exc import IntegrityError
 
+from app.dto.product import ProductCreateDTO, ProductUpdateDTO
 from app.repositories.product_category_repository import ProductCategoryRepository
 from app.repositories.product_repository import ProductRepository
-from app.schemas.product import ProductCreate, ProductRead, ProductUpdate
+from app.schemas.product import ProductRead
 
 
 class ProductService:
@@ -33,14 +34,14 @@ class ProductService:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
         return ProductRead.model_validate(product)
 
-    def create_product(self, payload: ProductCreate) -> ProductRead:
+    def create_product(self, payload: ProductCreateDTO) -> ProductRead:
         self._ensure_category_exists(payload.category_id)
-        product = self._repository.create(payload.model_dump())
+        product = self._repository.create(payload)
         return ProductRead.model_validate(product)
 
-    def update_product(self, product_id: int, payload: ProductUpdate) -> ProductRead:
+    def update_product(self, product_id: int, payload: ProductUpdateDTO) -> ProductRead:
         self._ensure_category_exists(payload.category_id)
-        product = self._repository.update(product_id, payload.model_dump())
+        product = self._repository.update(product_id, payload)
         if product is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
         return ProductRead.model_validate(product)

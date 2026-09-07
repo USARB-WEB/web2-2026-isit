@@ -3,12 +3,9 @@ from __future__ import annotations
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
 
+from app.dto.product_category import ProductCategoryCreateDTO, ProductCategoryUpdateDTO
 from app.repositories.product_category_repository import ProductCategoryRepository
-from app.schemas.product_category import (
-    ProductCategoryCreate,
-    ProductCategoryRead,
-    ProductCategoryUpdate,
-)
+from app.schemas.product_category import ProductCategoryRead
 
 
 class ProductCategoryService:
@@ -24,12 +21,12 @@ class ProductCategoryService:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product category not found")
         return ProductCategoryRead.model_validate(category)
 
-    def create_category(self, payload: ProductCategoryCreate) -> ProductCategoryRead:
-        category = self._repository.create(payload.model_dump())
+    def create_category(self, payload: ProductCategoryCreateDTO) -> ProductCategoryRead:
+        category = self._repository.create(payload)
         return ProductCategoryRead.model_validate(category)
 
-    def update_category(self, category_id: int, payload: ProductCategoryUpdate) -> ProductCategoryRead:
-        category = self._repository.update(category_id, payload.model_dump())
+    def update_category(self, category_id: int, payload: ProductCategoryUpdateDTO) -> ProductCategoryRead:
+        category = self._repository.update(category_id, payload)
         if category is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product category not found")
         return ProductCategoryRead.model_validate(category)

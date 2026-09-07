@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.db.models.product_category import ProductCategory
+from app.dto.product_category import ProductCategoryCreateDTO, ProductCategoryUpdateDTO
 
 
 class ProductCategoryRepository:
@@ -18,18 +19,18 @@ class ProductCategoryRepository:
     def get(self, category_id: int) -> ProductCategory | None:
         return self._db.get(ProductCategory, category_id)
 
-    def create(self, data: dict[str, object]) -> ProductCategory:
-        category = ProductCategory(**data)
+    def create(self, data: ProductCategoryCreateDTO) -> ProductCategory:
+        category = ProductCategory(**data.to_dict())
         self._db.add(category)
         self._db.commit()
         self._db.refresh(category)
         return category
 
-    def update(self, category_id: int, data: dict[str, object]) -> ProductCategory | None:
+    def update(self, category_id: int, data: ProductCategoryUpdateDTO) -> ProductCategory | None:
         category = self.get(category_id)
         if category is None:
             return None
-        for key, value in data.items():
+        for key, value in data.to_dict().items():
             setattr(category, key, value)
         self._db.commit()
         self._db.refresh(category)

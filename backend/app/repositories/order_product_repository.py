@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.db.models.order_product import OrderProduct
+from app.dto.order_product import OrderProductCreateDTO, OrderProductUpdateDTO
 
 
 class OrderProductRepository:
@@ -21,8 +22,8 @@ class OrderProductRepository:
             return None
         return order_product
 
-    def create(self, order_id: int, data: dict[str, object]) -> OrderProduct:
-        order_product = OrderProduct(order_id=order_id, **data)
+    def create(self, order_id: int, data: OrderProductCreateDTO) -> OrderProduct:
+        order_product = OrderProduct(order_id=order_id, **data.to_dict())
         self._db.add(order_product)
         try:
             self._db.commit()
@@ -32,11 +33,13 @@ class OrderProductRepository:
         self._db.refresh(order_product)
         return order_product
 
-    def update(self, order_id: int, order_product_id: int, data: dict[str, object]) -> OrderProduct | None:
+    def update(
+        self, order_id: int, order_product_id: int, data: OrderProductUpdateDTO
+    ) -> OrderProduct | None:
         order_product = self.get(order_id, order_product_id)
         if order_product is None:
             return None
-        for key, value in data.items():
+        for key, value in data.to_dict().items():
             setattr(order_product, key, value)
         try:
             self._db.commit()

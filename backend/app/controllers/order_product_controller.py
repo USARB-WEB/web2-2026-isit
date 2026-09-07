@@ -1,5 +1,6 @@
 from fastapi import Response, status
 
+from app.dto.order_product import OrderProductCreateDTO, OrderProductUpdateDTO
 from app.schemas.order_product import OrderProductCreate, OrderProductRead, OrderProductUpdate
 from app.services.order_product_service import OrderProductService
 
@@ -15,12 +16,14 @@ class OrderProductController:
         return self._service.get_order_product(order_id, order_product_id)
 
     def add_order_product(self, order_id: int, payload: OrderProductCreate) -> OrderProductRead:
-        return self._service.add_order_product(order_id, payload)
+        return self._service.add_order_product(order_id, OrderProductCreateDTO.from_schema(payload))
 
     def update_order_product(
         self, order_id: int, order_product_id: int, payload: OrderProductUpdate
     ) -> OrderProductRead:
-        return self._service.update_order_product(order_id, order_product_id, payload)
+        return self._service.update_order_product(
+            order_id, order_product_id, OrderProductUpdateDTO.from_schema(payload)
+        )
 
     def delete_order_product(self, order_id: int, order_product_id: int) -> Response:
         self._service.delete_order_product(order_id, order_product_id)

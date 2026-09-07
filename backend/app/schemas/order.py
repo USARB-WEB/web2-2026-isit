@@ -1,6 +1,6 @@
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, Field
 
-from app.schemas.order_product import OrderProductCreate, OrderProductRead
+from app.schemas.order_product import OrderProductCreate
 
 
 class OrderBase(BaseModel):
@@ -13,18 +13,3 @@ class OrderCreate(OrderBase):
 
 class OrderUpdate(OrderBase):
     pass
-
-
-class OrderRead(OrderBase):
-    model_config = ConfigDict(from_attributes=True)
-    id: int
-    products: list[OrderProductRead] = Field(default_factory=list)
-    products_count: int = 0
-    total_sum: float = 0.0
-
-
-class OrderSummary(OrderBase):
-    model_config = ConfigDict(from_attributes=True)
-    id: int
-    products_count: int = 0
-    total_sum: float = 0.0

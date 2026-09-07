@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, status
 
 from app.api.v1.dependencies.products import get_product_service
+from app.dto.product import ProductCreateDTO, ProductUpdateDTO
 from app.schemas.product import ProductCreate, ProductRead, ProductUpdate
 from app.services.product_service import ProductService
 
@@ -22,7 +23,7 @@ def create_product(
     payload: ProductCreate,
     service: ProductService = Depends(get_product_service),
 ) -> ProductRead:
-    return service.create_product(payload)
+    return service.create_product(ProductCreateDTO.from_schema(payload))
 
 
 @router.put("/{product_id}", response_model=ProductRead)
@@ -31,7 +32,7 @@ def update_product(
     payload: ProductUpdate,
     service: ProductService = Depends(get_product_service),
 ) -> ProductRead:
-    return service.update_product(product_id, payload)
+    return service.update_product(product_id, ProductUpdateDTO.from_schema(payload))
 
 
 @router.delete("/{product_id}", status_code=status.HTTP_204_NO_CONTENT)

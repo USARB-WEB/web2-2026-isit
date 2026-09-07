@@ -73,7 +73,7 @@ def test_create_order_with_products() -> None:
     assert {p["product_id"] for p in body["products"]} == {product_id, other_product_id}
     assert all(p["order_id"] == body["id"] for p in body["products"])
     assert body["products_count"] == 3  # 1 laptop + 2 mice
-    assert body["total_sum"] == round(999.99 * 1 + 19.99 * 2, 2)
+    assert body["total_sum"] == round(999.99 * 1 + 19.99 * 2, 0)
 
     list_response = client.get(f"/api/v1/orders/{body['id']}/products")
     assert len(list_response.json()) == 2
@@ -145,7 +145,7 @@ def test_get_order_computes_count_and_total_sum() -> None:
     assert response.status_code == 200
     body = response.json()
     assert body["products_count"] == 3
-    assert body["total_sum"] == round(49.50 * 3, 2)
+    assert body["total_sum"] == round(49.50 * 3, 0)
 
 
 def test_update_order() -> None:

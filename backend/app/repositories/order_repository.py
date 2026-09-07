@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.db.models.order import Order
+from app.dto.order import OrderCreateDTO, OrderUpdateDTO
 
 
 class OrderRepository:
@@ -18,18 +19,18 @@ class OrderRepository:
     def get(self, order_id: int) -> Order | None:
         return self._db.get(Order, order_id)
 
-    def create(self, data: dict[str, object]) -> Order:
-        order = Order(**data)
+    def create(self, data: OrderCreateDTO) -> Order:
+        order = Order(client_name=data.client_name)
         self._db.add(order)
         self._db.commit()
         self._db.refresh(order)
         return order
 
-    def update(self, order_id: int, data: dict[str, object]) -> Order | None:
+    def update(self, order_id: int, data: OrderUpdateDTO) -> Order | None:
         order = self.get(order_id)
         if order is None:
             return None
-        for key, value in data.items():
+        for key, value in data.to_dict().items():
             setattr(order, key, value)
         self._db.commit()
         self._db.refresh(order)
