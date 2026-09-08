@@ -1,9 +1,9 @@
 version: "3.9"
 
 services:
-  mysql:
+  mysql-prod:
     image: mysql:8.0
-    container_name: learning-mysql
+    container_name: learning-mysql-prod
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: learning_db
@@ -12,6 +12,21 @@ services:
       MYSQL_ROOT_PASSWORD: root_pass
     ports:
       - "3316:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql-init:/docker-entrypoint-initdb.d
+
+  mysql-dev:
+    image: mysql:8.0
+    container_name: learning-mysql-dev
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: learning_db
+      MYSQL_USER: learning_user
+      MYSQL_PASSWORD: learning_pass
+      MYSQL_ROOT_PASSWORD: root_pass
+    ports:
+      - "3317:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./docker/mysql-init:/docker-entrypoint-initdb.d

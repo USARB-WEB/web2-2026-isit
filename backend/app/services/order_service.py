@@ -60,18 +60,27 @@ class OrderService:
         return self._build_order_read(order)
 
     def create_order(self, payload: OrderCreateDTO) -> OrderReadDTO:
-        for product_dto in payload.products:
-            self._ensure_product_exists(product_dto.product_id)
-
         order = self._repository.create(payload)
-        order_products = [
-            self._order_product_repository.create(order.id, product_dto)
-            for product_dto in payload.products
-        ]
+        try:
+            order_products = [
+                self._order_product_repository.create(order.id, product_dto)
+                for product_dto in payload.products
+            ]
+        except IntegrityError:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Cannot create this order because one of the products is invalid or products doesn't exist.",
+            )
         return self._build_order_read(order, order_products=order_products)
 
     def update_order(self, order_id: int, payload: OrderUpdateDTO) -> OrderReadDTO:
-        order = self._repository.update(order_id, payload)
+        try:
+            order = self._repository.update(order_id, payload)
+        except IntegrityError:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Cannot update this order due to a data conflict.",
+            )
         if order is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
         return self._build_order_read(order)

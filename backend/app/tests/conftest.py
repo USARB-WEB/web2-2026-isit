@@ -15,6 +15,7 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+import app.db.session as db_session
 from app.core.config import settings
 from app.db.base import Base
 from app.db.session import get_db
@@ -29,6 +30,11 @@ from app.main import app
 
 test_engine = create_engine(settings.test_database_url, pool_pre_ping=True)
 TestSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
+
+# The app's startup check (app.db.session.check_database_connection) pings
+# whatever engine this module points at, so redirect it to the test database
+# before any request triggers FastAPI's lifespan.
+db_session.engine = test_engine
 
 
 def _get_test_db():

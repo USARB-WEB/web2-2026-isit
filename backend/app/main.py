@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from typing import Any
 
 from fastapi import FastAPI
@@ -10,6 +11,7 @@ from app.api.v1.routes.orders import router as orders_router
 from app.api.v1.routes.product_categories import router as product_categories_router
 from app.api.v1.routes.products import router as products_router
 from app.core.config import settings
+from app.db.session import check_database_connection
 
 # The HTTP QUERY method (RFC 9110 style: safe, idempotent, but with a request body)
 # is newer than the defaults FastAPI ships with, so two things need a nudge:
@@ -34,11 +36,20 @@ def build_openapi(app: FastAPI) -> dict[str, Any]:
     return schema
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Fail fast on startup if the database is unreachable, instead of
+    # letting every request crash individually with a raw OperationalError.
+    check_database_connection()
+    yield
+
+
 def create_app() -> FastAPI:
     app = FastAPI(
         title=settings.app_name,
         debug=settings.debug,
         version="0.1.0",
+        lifespan=lifespan,
     )
     app.include_router(health_router, prefix=settings.api_v1_prefix)
     app.include_router(products_router, prefix=settings.api_v1_prefix)
