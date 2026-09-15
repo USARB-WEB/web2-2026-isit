@@ -15,6 +15,12 @@ class Settings(BaseSettings):
     mysql_database: str = "learning_db"
     mysql_test_database: str = "learning_test_db"
 
+    # Authentication. The default secret is fine for local development only;
+    # set JWT_SECRET_KEY in the environment for anything else.
+    jwt_secret_key: str = "local-development-only-secret-change-me-in-production"
+    jwt_algorithm: str = "HS256"
+    access_token_expire_minutes: int = 60
+
     @property
     def database_url(self) -> str:
         return (

@@ -25,6 +25,7 @@ from app.db.models.order import Order  # noqa: F401
 from app.db.models.order_product import OrderProduct  # noqa: F401
 from app.db.models.product import Product  # noqa: F401
 from app.db.models.product_category import ProductCategory  # noqa: F401
+from app.db.models.user import User  # noqa: F401
 
 from app.main import app
 

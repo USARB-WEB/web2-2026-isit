@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from fastapi.openapi.constants import METHODS_WITH_BODY
 from fastapi.openapi.utils import get_openapi
 
+from app.api.v1.routes.auth import router as auth_router
 from app.api.v1.routes.health import router as health_router
 from app.api.v1.routes.order_products import router as order_products_router
 from app.api.v1.routes.orders import router as orders_router
@@ -52,6 +53,7 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
     app.include_router(health_router, prefix=settings.api_v1_prefix)
+    app.include_router(auth_router, prefix=settings.api_v1_prefix)
     app.include_router(products_router, prefix=settings.api_v1_prefix)
     app.include_router(product_categories_router, prefix=settings.api_v1_prefix)
     app.include_router(orders_router, prefix=settings.api_v1_prefix)

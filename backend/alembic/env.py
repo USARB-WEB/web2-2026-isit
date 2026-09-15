@@ -9,6 +9,7 @@ from app.core.config import settings
 from app.db.base import Base
 from app.db.models.product import Product  # noqa: F401  (registers table with Base.metadata)
 from app.db.models.product_category import ProductCategory  # noqa: F401
+from app.db.models.user import User  # noqa: F401
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
